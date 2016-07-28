@@ -33,6 +33,7 @@ data <- cbind(data.table(subject = subject$V1,
 ## for each activity and each subject.
 
 data <- as.data.table(data)
+names(data) <- gsub("\\()", "", names(data))
 
 averageActivity <- data[, lapply(.SD, mean), by = activityName, .SDcols = data[,(3:81)]] %>%
                 mutate(subject = NA)
@@ -48,4 +49,4 @@ setcolorder(averageSubject, c(num_cols, 1, seq(from=2, to=(num_cols - 1))))
 averageDataSet <- rbind(averageActivity, averageSubject)
 
 rm(list = c("activity", "activityLabel", "averageActivity",
-            "averageSubject", "features", "subject"))
+            "averageSubject", "features", "subject", "num_cols"))
