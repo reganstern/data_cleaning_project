@@ -26,10 +26,13 @@ activity <- fread("./test/y_test.txt") %>%
         rbind(fread("./train/y_train.txt"))
 
 data <- cbind(data.table(subject = subject$V1, 
-                         activityName = activityLabel[activity$V1]$V2), data)
+                activityName = activityLabel[activity$V1]$V2), data) %>% 
+                arrange(subject, activityName) 
 
 ## Create a data table with the average of each variable 
 ## for each activity and each subject.
+
+data <- as.data.table(data)
 
 averageActivity <- data[, lapply(.SD, mean), by = activityName, .SDcols = data[,(3:81)]] %>%
                 mutate(subject = NA)
@@ -43,3 +46,6 @@ num_cols <- length(names(averageSubject))
 setcolorder(averageSubject, c(num_cols, 1, seq(from=2, to=(num_cols - 1))))
 
 averageDataSet <- rbind(averageActivity, averageSubject)
+
+rm(list = c("activity", "activityLabel", "averageActivity",
+            "averageSubject", "features", "subject"))
